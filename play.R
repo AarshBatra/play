@@ -1578,16 +1578,16 @@ for (k in 1 : length(nFirmsVec)){
   
 
   # send e-mail when data is ready  
-  if(k == length(nFirmsVec)){
-    send.mail(from = "aarshbatra.in@gmail.com", to = "aarshbatra.in@gmail.com", subject = "Test e-mail from R",
-              body = print("Hi, Aarsh: Your animation data is ready! Best, Aarsh."),
-              smtp = list(host.name = "smtp.gmail.com", port = 465,
-                          user.name = "aarshbatra.in@gmail.com",
-                          passwd = "@@rshbatra1995", ssl = TRUE),
-              authenticate = TRUE,
-              send = TRUE)
-  }
-  
+  # if(k == length(nFirmsVec)){
+  #   send.mail(from = "aarshbatra.in@gmail.com", to = "aarshbatra.in@gmail.com", subject = "Test e-mail from R",
+  #             body = print("Hi, Aarsh: Your animation data is ready! Best, Aarsh."),
+  #             smtp = list(host.name = "smtp.gmail.com", port = 465,
+  #                         user.name = "aarshbatra.in@gmail.com",
+  #                         passwd = "@@rshbatra1995", ssl = TRUE),
+  #             authenticate = TRUE,
+  #             send = TRUE)
+  # }
+  # 
 }
 
 df <- tibble(numberOfFirms = nFirmsVec, eqPrice = price, frameNum = c(1 : length(nFirmsVec)))
