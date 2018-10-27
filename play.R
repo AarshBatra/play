@@ -1583,7 +1583,7 @@ for (k in 1 : length(nFirmsVec)){
   #             body = print("Hi, Aarsh: Your animation data is ready! Best, Aarsh."),
   #             smtp = list(host.name = "smtp.gmail.com", port = 465,
   #                         user.name = "aarshbatra.in@gmail.com",
-  #                         passwd = "@@rshbatra1995", ssl = TRUE),
+  #                         passwd = "enterPassword", ssl = TRUE),
   #             authenticate = TRUE,
   #             send = TRUE)
   # }
