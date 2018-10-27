@@ -1548,4 +1548,36 @@ plt <- ggplot(data = gapminder) + geom_point(mapping = aes(x = gdpPercap, y = li
 plt
 #-----------------------------------------------------------------------------------------------
 
+remainderWhenDivByThree <- c()
+for(i in 1 : 1000){
+  remainderWhenDivByThree[i] <- i %% 3
+}
+
+#-- solution(simulation) for MIT DEDP Micoreconomics course-Week7-HW-7.2.6 (Coding it turned my mood from pathetic to Fantastic)------------------------
+dim <- 500
+bAmt <- 100
+A <- matrix(0, dim, dim)
+B <- matrix(c(rep(100, times = dim)), dim, 1)
+price <- c(rep(0, times = dim))
+for (k in 1 : dim){
+  for(i in 1 : dim){
+    for (j in 1 : dim){
+      if(i == j){
+        A[i, j] <- 1
+      } else {
+        A[i, j] <- 0.5
+      }
+    }
+  }
+  ans <- solve(A, B)
+  price[k] <- 4 - (0.01*(length(ans)*ans[1]))
+}
+
+df <- tibble(numberOfFirms = c(1 : dim), eqPrice = price)
+ggplot(data = df) + geom_line(mapping = aes(x = numberOfFirms, y = eqPrice))
+
+
+
+#------------------------------------------------------------------------------------
+
 

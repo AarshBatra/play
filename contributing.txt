@@ -1,8 +1,0 @@
-Please read the below instructions:
-
-1. Instructions 1: Say, Hello World.
-2. Instruction 2: Shut your mouth!
-3. Instruction 3: Open your mouth.
-4. Instruction 4: Repeat Instruction 2.
-5. Instruction 5: Repeat Instruction 3.
-6. Instruction 6: Repeat Instruction 2.
