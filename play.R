@@ -1576,9 +1576,9 @@ for (k in 1 : length(nFirmsVec)){
 }
 
 
-df <- tibble(numberOfFirms = nFirmsVec, eqPrice = price)
+df <- tibble(numberOfFirms = nFirmsVec, eqPrice = price, frameNum = c(1 : length(nFirmsVec)))
 ggplot(data = df) + geom_line(mapping = aes(x = numberOfFirms, y = eqPrice))
-
+plot_ly(df, x = ~numberOfFirms, y = ~eqPrice, frame = ~frameNum)
 
 
 
