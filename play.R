@@ -1576,6 +1576,8 @@ for (k in 1 : dim){
 df <- tibble(numberOfFirms = c(1 : dim), eqPrice = price)
 ggplot(data = df) + geom_line(mapping = aes(x = numberOfFirms, y = eqPrice))
 
+# test change
+
 
 
 #------------------------------------------------------------------------------------
