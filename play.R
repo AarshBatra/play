@@ -1554,8 +1554,10 @@ for(i in 1 : 1000){
 }
 
 #-- solution(simulation) for MIT DEDP Micoreconomics course-Week7-HW-7.2.6 (Coding it turned my mood from pathetic to Fantastic)------------------------
+library(sendmailR) # for updating via e-mail when data is ready
+library(mailR) # for updating via e-mail when data is ready
 bAmt <- 100
-nFirmsVec <- seq(25, 500, 25)
+nFirmsVec <- seq(1, 1000, 2)
 A <- matrix()
 B <- matrix()
 price <- c(rep(0, times = length(nFirmsVec)))
@@ -1573,21 +1575,37 @@ for (k in 1 : length(nFirmsVec)){
   }
   ans <- solve(A, B)
   price[k] <- 4 - (0.01*(length(ans)*ans[1]))
-}
+  
 
+  # send e-mail when data is ready  
+  if(k == length(nFirmsVec)){
+    send.mail(from = "aarshbatra.in@gmail.com", to = "aarshbatra.in@gmail.com", subject = "Test e-mail from R",
+              body = print("Hi, Aarsh: Your animation data is ready! Best, Aarsh."),
+              smtp = list(host.name = "smtp.gmail.com", port = 465,
+                          user.name = "aarshbatra.in@gmail.com",
+                          passwd = "@@rshbatra1995", ssl = TRUE),
+              authenticate = TRUE,
+              send = TRUE)
+  }
+  
+}
 
 df <- tibble(numberOfFirms = nFirmsVec, eqPrice = price, frameNum = c(1 : length(nFirmsVec)))
 ggplot(data = df) + geom_line(mapping = aes(x = numberOfFirms, y = eqPrice))
-df1 <- df %>% accumulate_by(~frameNum)
+df1 <- df %>% accumulate_by(~frameNum) # accumulate_by is a function written (not by me) in play.R (see above). 
 df1 %>% 
   plot_ly(x = ~numberOfFirms,
           y = ~eqPrice,
           frame = ~frame,
           type = "scatter",
-          mode = "lines")
+          mode = "lines", 
+          line = list(simplyfy = F)) %>%
+  animation_opts(
+    frame = 100, 
+    transition = 0, 
+    redraw = FALSE
+  )
 
-    
-    
     
 #------------------------------------------------------------------------------------
 
