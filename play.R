@@ -1578,10 +1578,17 @@ for (k in 1 : length(nFirmsVec)){
 
 df <- tibble(numberOfFirms = nFirmsVec, eqPrice = price, frameNum = c(1 : length(nFirmsVec)))
 ggplot(data = df) + geom_line(mapping = aes(x = numberOfFirms, y = eqPrice))
-plot_ly(df, x = ~numberOfFirms, y = ~eqPrice, frame = ~frameNum)
+df1 <- df %>% accumulate_by(~frameNum)
+df1 %>% 
+  plot_ly(x = ~numberOfFirms,
+          y = ~eqPrice,
+          frame = ~frame,
+          type = "scatter",
+          mode = "lines")
 
-
-
+    
+    
+    
 #------------------------------------------------------------------------------------
 
 
