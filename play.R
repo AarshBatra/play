@@ -1554,14 +1554,16 @@ for(i in 1 : 1000){
 }
 
 #-- solution(simulation) for MIT DEDP Micoreconomics course-Week7-HW-7.2.6 (Coding it turned my mood from pathetic to Fantastic)------------------------
-dim <- 500
 bAmt <- 100
-A <- matrix(0, dim, dim)
-B <- matrix(c(rep(100, times = dim)), dim, 1)
-price <- c(rep(0, times = dim))
-for (k in 1 : dim){
-  for(i in 1 : dim){
-    for (j in 1 : dim){
+nFirmsVec <- seq(25, 500, 25)
+A <- matrix()
+B <- matrix()
+price <- c(rep(0, times = length(nFirmsVec)))
+for (k in 1 : length(nFirmsVec)){
+  A <- matrix(0, nFirmsVec[k], nFirmsVec[k])
+  B <- matrix(c(rep(100, times = nFirmsVec[k])), nFirmsVec[k], 1)
+  for(i in 1 : nFirmsVec[k]){
+    for (j in 1 : nFirmsVec[k]){
       if(i == j){
         A[i, j] <- 1
       } else {
@@ -1573,10 +1575,10 @@ for (k in 1 : dim){
   price[k] <- 4 - (0.01*(length(ans)*ans[1]))
 }
 
-df <- tibble(numberOfFirms = c(1 : dim), eqPrice = price)
+
+df <- tibble(numberOfFirms = nFirmsVec, eqPrice = price)
 ggplot(data = df) + geom_line(mapping = aes(x = numberOfFirms, y = eqPrice))
 
-# test change
 
 
 
