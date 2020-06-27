@@ -1682,8 +1682,10 @@ returnChange <- function(nd1, nd2, nd3, nd4, nd5, nd6, nd7, nd8, nd9, nd10, cogs
         }
       }
     }
-    listOfObjToReturn <- list(returnCashDenmVec, cashInStock)
-    return(listOfObjToReturn)
+    dfToReturn <- tibble(denom = denominations, numOfNotesReturn = returnCashDenmVec,
+                         cashLeftOverInCounter = cashInStock)
+    return(dfToReturn)    
+
     
   }
 }
