@@ -8,6 +8,7 @@ library(stringr)
 library(dplyr)
 library(gganimate)
 library(plotly)
+library(sketchr)
 
 # test zone------------------------------------------------------------------------------------------------
 
@@ -1608,5 +1609,84 @@ df1 %>%
 
     
 #------------------------------------------------------------------------------------
+
+# sketchR 
+fileName <- 1
+fileType <- ".jpg"
+imPath <- c(str_c("C:/Users/Aarsh Batra/Desktop/GitHub/play/", fileName,  fileType))
+
+outputSketch <- function(fileName, fileType, lw, sty){
+  imPath <- c(str_c("C:/Users/Aarsh Batra/Desktop/GitHub/play/", fileName,  fileType))
+  sampleImage <- im_load(imPath)
+  sketchedSampleImage <- sketch(sampleImage, lineweight = lw, style = sty)
+  return(sketchedSampleImage)
+}
+
+im_save(foo, "14v2", path = "C:/Users/Aarsh Batra/Desktop/GitHub/play")
+
+# cash-counter algorithm (assuming denominations 1, 2,  5, 10, 50, 100, 200, 500, 2000)
+
+# cash in stock
+
+denominations <- c(1, 2, 5, 10, 20, 50, 100, 200, 500, 2000)
+cashInStock <- c(10, 20, 30, 10, 15, 20, 0, 10, 19, 20)
+returnCashDenmVec <- c(rep(0, times = length(denominations)))
+
+returnChange <- function(nd1, nd2, nd3, nd4, nd5, nd6, nd7, nd8, nd9, nd10, cogs){
+  
+  amountReceived <- sum(c(nd1, nd2, nd3, nd4, nd5,
+                      nd6, nd7, nd8, nd9, nd10) * denominations)
+  
+  foo <- denominations
+  if(cogs > amountReceived){
+    print(stringr::str_c("You need to pay", cogs - amountReceived, "more Rs", sep = " "))
+  } else if (cogs == amountReceived) {
+    print("Thank you for shopping with us!")
+  } else {
+    cashInStock <- cashInStock + c(nd1, nd2, nd3, nd4, nd5, nd6, nd7, nd8, nd9, nd10)
+    returnCash <- amountReceived - cogs
+    print(str_c("returnCash: ", returnCash)) # debugging
+    denomDistfrmRetCash <- returnCash - denominations
+    print(str_c("denomDistFromRetCash: ", denomDistfrmRetCash)) # debugging
+    closDenInd <- which(denomDistfrmRetCash == min(
+      denomDistfrmRetCash[denomDistfrmRetCash >= 0]))
+    print(str_c("closeDenInd: ", closDenInd)) # debugging
+    for(i in closDenInd : 1){
+      if(cashInStock[i] > 0){
+        currFreqReq <- returnCash %/% (denominations[i])
+        if(currFreqReq == 0){
+          next
+        } else {
+          remCash <- returnCash %% (denominations[i])
+          if(currFreqReq >= cashInStock[i]){
+            if(cashInStock[i] == 0){
+              next
+            } else {
+              returnCashDenmVec[i] <-  cashInStock[i]
+              cashInStock[i] <- cashInStock[i] -  cashInStock[i]
+              returnCash <- remCash
+              if(returnCash == 0){
+                break
+              } 
+            }
+            
+          } else {
+            returnCashDenmVec[i] <- currFreqReq
+            cashInStock[i] <- cashInStock[i] - currFreqReq
+            returnCash <- remCash
+            if(returnCash == 0){
+              break
+            }
+          }
+          
+        }
+      }
+    }
+    listOfObjToReturn <- list(returnCashDenmVec, cashInStock)
+    return(listOfObjToReturn)
+    
+  }
+}
+
 
 
