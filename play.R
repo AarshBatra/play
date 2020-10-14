@@ -1739,7 +1739,73 @@ getTotalNumOfPos <- function(num){
   }
 }
 
-
+convertToWord <- function(num){ # This only converts for numbers 1 to 100
+  convTibble <- tibble(
+    num = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17
+          , 18, 19, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 
+          600, 700, 800, 900, 1000), 
+    numInWords = c("zero", "one", "two", "three", "four", "five", "six", "seven", "eight", 
+          "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", 
+          "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "thirty", 
+          "forty", "fifty", "sixty", "seventy", "eighty", "ninety", "One hundred", 
+          "Two Hundred", "Three Hundred", "Four Hundred", "Five Hundred", "Six Hundred", 
+          "Seven Hundred", "Eight Hundred", "Nine Hundred", "One Thousand")
+  )
+  if((num %in% convTibble$num) == TRUE){
+    tmpInd1 <- which(convTibble$num == num)
+    return(convTibble$numInWords[tmpInd1])
+  } else {
+    lenOfNum <- length(unlist(str_split(num, "")))
+    if(lenOfNum == 2){
+      splitNum <- as.numeric(unlist(str_split(num, "")))
+      
+      splitNumTensPartNum <- splitNum[1] * 10 
+      tmpInd2 <- which(convTibble$num == splitNumTensPartNum)
+      tensPartInWords  <- convTibble$numInWords[tmpInd2]
+      
+      splitNumOnesPartNum <- splitNum[2] * 1
+      tmpInd3 <- which(convTibble$num == splitNumOnesPartNum)
+      onesPartInWords  <- convTibble$numInWords[tmpInd3]
+      
+      return(str_c(tensPartInWords, onesPartInWords, sep = " ")) 
+      
+    } else if(lenOfNum == 3){
+      splitNum <- as.numeric(unlist(str_split(num, "")))
+      
+      splitNumHundredsPartNum <- splitNum[1] * 100 
+      tmpInd4 <- which(convTibble$num == splitNumHundredsPartNum)
+      hundredsPartInWords  <- convTibble$numInWords[tmpInd4]
+      
+      newNum <- num - splitNumHundredsPartNum
+      
+      if((newNum %in% convTibble$num) == TRUE){
+        tmpInd1 <- which(convTibble$num == newNum)
+        onesTensPartInWords  <- convTibble$numInWords[tmpInd1]
+      } else {
+        lenOfNum <- length(unlist(str_split(newNum, "")))
+        if(lenOfNum == 2){
+          splitNum <- as.numeric(unlist(str_split(newNum, "")))
+          
+          splitNumTensPartNum <- splitNum[1] * 10 
+          tmpInd2 <- which(convTibble$num == splitNumTensPartNum)
+          tensPartInWords  <- convTibble$numInWords[tmpInd2]
+          
+          splitNumOnesPartNum <- splitNum[2] * 1
+          tmpInd3 <- which(convTibble$num == splitNumOnesPartNum)
+          onesPartInWords  <- convTibble$numInWords[tmpInd3]
+          
+          onesTensPartInWords <- str_c(tensPartInWords, onesPartInWords, sep = " ")
+          
+          return(str_c(hundredsPartInWords, onesTensPartInWords, sep = " "))
+      
+    } else {
+      stop("Please enter a number in the range 0 to 999")
+    }
+  }
+    return(str_c(hundredsPartInWords, onesTensPartInWords, sep = " "))    
+}
+ }
+}
 
 # biggestDenOfNum
 # numOfPos
