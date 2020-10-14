@@ -9,6 +9,11 @@ library(dplyr)
 library(gganimate)
 library(plotly)
 library(sketchr)
+library(tidyr)
+library(stringr)
+library(magrittr)
+library(dplyr)
+library(lubridate)
 
 # test zone------------------------------------------------------------------------------------------------
 
@@ -1624,7 +1629,7 @@ outputSketch <- function(fileName, fileType, lw, sty){
 
 im_save(foo, "14v2", path = "C:/Users/Aarsh Batra/Desktop/GitHub/play")
 
-# cash-counter algorithm (assuming denominations 1, 2,  5, 10, 50, 100, 200, 500, 2000)
+# cash-counter algorithm v2 (assuming denominations 1, 2,  5, 10, 50, 100, 200, 500, 2000)
 
 # cash in stock
 
@@ -1690,5 +1695,60 @@ returnChange <- function(nd1, nd2, nd3, nd4, nd5, nd6, nd7, nd8, nd9, nd10, cogs
   }
 }
 
+# ggplot (Mastering Software Development in R)--------------------
+
+# install.packages("titanic") # If you don't have the package installed
+library(titanic)
+data("titanic_train", package = "titanic")
+titanic <- titanic_train
+
+library(faraway)
+data("worldcup")
+
+library(ggplot2)
+library(dplyr)
+library(ggplot2)
+library(gridExtra)
+library(ggthemes)
+
+irisData <- datasets::iris
+irisData %>% ggplot(mapping = aes(x = Sepal.Length, y = Sepal.Width, color = Species)) + geom_point() +
+  ggtitle("Sepal Length v/s Sepal Width by Species") + xlab("Sepal Length") + ylab("Sepal Width")
+
+worldcup %>% ggplot() + geom_point(mapping = aes(x = Time, y = Passes)) + 
+  facet_grid(Team ~ Position)
+
+obj1 <- worldcup %>% dplyr::group_by(Team, Position) %>% summarise(AvgPasses = mean(Passes, na.rm = TRUE)) %>% dplyr::arrange(Team, AvgPasses)
+
+obj1_filter_lrgAvgPasses <- obj1 %>% filter((AvgPasses > 150 | AvgPasses < 30)) %>% mutate(Label = str_c(Team, Position, sep = ", "))
+
+obj1 %>% ggplot() + geom_point(mapping = aes(x = Position, y = AvgPasses, color = Position)) + geom_hline(yintercept = c(40, 80)) + 
+  facet_wrap(~Team, ncol = 6) + geom_text(data = obj1_filter_lrgAvgPasses, mapping = aes(x = Position, y = AvgPasses, label = Label), size = 2.5) + coord_flip() + theme_few() +
+  ggtitle("Avg Passes for each position by Team")
+
+# Converting a number to string----------------------------
+# assuming 3 comma system
+
+getTotalNumOfPos <- function(num){
+  detectPowerOfTen <- str_detect(num, "(1([^123456789])+)|(1e(.)+)")
+  if(detectPowerOfTen == TRUE){
+    if(num <= 10000){
+      zeroCount <- str_count(num, "0")
+      return(zeroCount + 1)
+    } else {
+      intRegExp <- str_extract(num, "\\+..")
+      zeroCount <- as.numeric(str_sub(intRegExp, 3, 3))
+      return(zeroCount + 1)
+    }
+  } else {
+    chrNumSplit <- unlist(stringr::str_split(num, ""))
+    length(chrNumSplit) 
+  }
+}
 
 
+
+# biggestDenOfNum
+# numOfPos
+# nameOfEachPosVec <- c("one", "ten")
+# numAtEachPos
