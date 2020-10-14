@@ -1730,19 +1730,12 @@ obj1 %>% ggplot() + geom_point(mapping = aes(x = Position, y = AvgPasses, color 
 # assuming 3 comma system
 
 getTotalNumOfPos <- function(num){
-  detectPowerOfTen <- str_detect(num, "(1([^123456789])+)|(1e(.)+)")
-  if(detectPowerOfTen == TRUE){
-    if(num <= 10000){
-      zeroCount <- str_count(num, "0")
-      return(zeroCount + 1)
-    } else {
-      intRegExp <- str_extract(num, "\\+..")
-      zeroCount <- as.numeric(str_sub(intRegExp, 3, 3))
-      return(zeroCount + 1)
-    }
+  if(str_detect(num, "\\+") == TRUE){
+    numAfterE <- str_extract(num, "\\+(.)+")
+    numAfterE <- as.numeric(str_extract(numAfterE, "[^\\+]+"))
+    return(numAfterE + 1)
   } else {
-    chrNumSplit <- unlist(stringr::str_split(num, ""))
-    length(chrNumSplit) 
+    return(str_count(num))
   }
 }
 
