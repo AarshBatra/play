@@ -1845,31 +1845,70 @@ lettersFreqInCipherText <- lettersFreqInCipherText %>%
 
 # encipher, decipher
 
-encipher <- function(string, cipherType = "caesar"){
- if(cipherType == "caesar"){
-   print("Enter a value for caesar shift")
-   shiftBy <- readline()
-   shiftBy <- as.numeric(shiftBy)
-   stringToLower <- stringr::str_to_lower(string)
-   stringToLowerVec <- unlist(stringr::str_split(stringToLower, ""))
-   cipherTib <- tibble(plainText = stringToLowerVec, indexOfPlainText = NA, 
-                       indexOfCipherText = NA)
-   for(i in 1 : length(stringToLowerVec)){
-     if(stringToLowerVec[i] == " "){
-       cipherTib$indexOfPlainText[i] <- NA
-     } else {
-       cipherTib$indexOfPlainText[i] <- which(letters %in% stringToLowerVec[i]) 
-     }
-   }
-   cipherTib$indexOfPlainText <- as.numeric(cipherTib$indexOfPlainText)
-   cipherTib$indexOfCipherText <- (cipherTib$indexOfPlainText + shiftBy)
-   cipherTib$indexOfCipherText <- cipherTib$indexOfCipherText %% 26
-   cipherTib$indexOfCipherText[cipherTib$indexOfCipherText == 0] <- 26
-   cipherTib$cipherAlphabet <- letters[cipherTib$indexOfCipherText]
-   cipherTib$cipherAlphabet <- tidyr::replace_na(cipherTib$cipherAlphabet, " ")
-   cipherTextReturn <- str_c(cipherTib$cipherAlphabet, collapse =  " ")
-   retlist <- list(a = cipherTextReturn, b = cipherTib)
-   retlist
- }
+cryptAnalysis <- function(string, cipherType = "caesar", typeOfOper = "encrypt"){
+  print("What do you want to do? Type 'encrypt' for encrypting and 'decrypt' for
+  decrypting. Please enter your answer below:" )
+  typeOfOper <- readline()
+  if((typeOfOper %in% c("encrypt", "decrypt")) == FALSE){
+    stop("Please enter 'encrypt' for encrypting and 'decrypt' for decrypting.")
+  } else {
+    if(cipherType == "caesar" && typeOfOper == "encrypt"){
+      print("Enter a value for caesar shift")
+      shiftBy <- readline()
+      shiftBy <- as.numeric(shiftBy)
+      stringToLower <- stringr::str_to_lower(string)
+      stringToLowerVec <- unlist(stringr::str_split(stringToLower, ""))
+      cipherTib <- tibble(plainText = stringToLowerVec, indexOfPlainText = NA, 
+                          indexOfCipherText = NA)
+      for(i in 1 : length(stringToLowerVec)){
+        if(stringToLowerVec[i] == " "){
+          cipherTib$indexOfPlainText[i] <- NA
+        } else {
+          cipherTib$indexOfPlainText[i] <- which(letters %in% stringToLowerVec[i]) 
+        }
+      }
+      cipherTib$indexOfPlainText <- as.numeric(cipherTib$indexOfPlainText)
+      cipherTib$indexOfCipherText <- (cipherTib$indexOfPlainText + shiftBy)
+      cipherTib$indexOfCipherText <- cipherTib$indexOfCipherText %% 26
+      cipherTib$indexOfCipherText[cipherTib$indexOfCipherText == 0] <- 26
+      cipherTib$cipherAlphabet <- letters[cipherTib$indexOfCipherText]
+      cipherTib$cipherAlphabet <- tidyr::replace_na(cipherTib$cipherAlphabet, " ")
+      cipherTextReturn <- str_c(cipherTib$cipherAlphabet, collapse =  " ")
+      retlist <- list(a = cipherTextReturn, b = cipherTib)
+      return(retlist)
+      
+      
+    } else if(cipherType == "caesar" && typeOfOper == "decrypt"){
+      
+      print("Enter a value by which you performed the caesar shift")
+      shiftBy <- readline()
+      shiftBy <- as.numeric(shiftBy)
+      stringToLower <- stringr::str_to_lower(string)
+      stringToLowerVec <- unlist(stringr::str_split(stringToLower, ""))
+      cipherTib <- tibble(cipherText = stringToLowerVec, indexOfCipherText = NA, 
+                          indexOfPlainText = NA)
+      for(i in 1 : length(stringToLowerVec)){
+        if(stringToLowerVec[i] == " "){
+          cipherTib$indexOfCipherText[i] <- NA
+        } else {
+          cipherTib$indexOfCipherText[i] <- which(letters %in% stringToLowerVec[i]) 
+        }
+      }
+      cipherTib$indexOfCipherText <- as.numeric(cipherTib$indexOfCipherText)
+      cipherTib$indexOfPlainText <- (cipherTib$indexOfCipherText - shiftBy) + 26
+      cipherTib$indexOfPlainText <- cipherTib$indexOfPlainText %% 26
+      cipherTib$indexOfPlainText[cipherTib$indexOfPlainText == 0] <- 26
+      cipherTib$decipherAlphabet <- letters[cipherTib$indexOfPlainText]
+      cipherTib$decipherAlphabet <- tidyr::replace_na(cipherTib$decipherAlphabet, " ")
+      decipherTextReturn <- str_c(cipherTib$decipherAlphabet, collapse =  " ")
+      retlist <- list(a = decipherTextReturn, b = cipherTib)
+      return(retlist)
+      
+      
+      
+      
+    }
+    
+  }
 }
 
