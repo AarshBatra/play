@@ -8,6 +8,12 @@ library(stringr)
 library(dplyr)
 library(gganimate)
 library(plotly)
+library(sketchr)
+library(tidyr)
+library(stringr)
+library(magrittr)
+library(dplyr)
+library(lubridate)
 
 # test zone------------------------------------------------------------------------------------------------
 
@@ -48,7 +54,7 @@ if(tmpDie1 == tmpDie2){
     sumOfDice <- tmpDie1 + tmpDie2
     
     if(tmpDie1 == tmpDie2){
-     print("Go to Jail.") 
+      print("Go to Jail.") 
     }
   } else {
     f <- "blibla"
@@ -144,25 +150,25 @@ correctPath <- function(){
 #---------------------------------------------------------------------------------------------------------
 
 # sending e-mails with R 
- 
- install.packages("sendmailR")
- install.packages("mailR")
- library(sendmailR)
- library(mailR)
- emailIdList <- c("substance.mona@gmail.com", "pranavbatra.ind@gmail.com", "aarshbatra.in@gmail.com")
- namesList <- c("Mona Batra", "Pranav Batra", "Aarsh Batra")
- 
- for(i in 1 : length(emailIdList)){
-   send.mail(from = "aarshbatra.in@gmail.com", to = emailIdList[i], subject = "Test e-mail from R",
-             body = sprintf("Hi, %s: This is a test e-mail. Best, Aarsh.", namesList[i]),
-             smtp = list(host.name = "smtp.gmail.com", port = 465,
-                         user.name = "aarshbatra.in@gmail.com",
-                         passwd = "enterPassword", ssl = TRUE),
-             authenticate = TRUE,
-             send = TRUE)  
- }
- 
- 
+
+install.packages("sendmailR")
+install.packages("mailR")
+library(sendmailR)
+library(mailR)
+emailIdList <- c("substance.mona@gmail.com", "pranavbatra.ind@gmail.com", "aarshbatra.in@gmail.com")
+namesList <- c("Mona Batra", "Pranav Batra", "Aarsh Batra")
+
+for(i in 1 : length(emailIdList)){
+  send.mail(from = "aarshbatra.in@gmail.com", to = emailIdList[i], subject = "Test e-mail from R",
+            body = sprintf("Hi, %s: This is a test e-mail. Best, Aarsh.", namesList[i]),
+            smtp = list(host.name = "smtp.gmail.com", port = 465,
+                        user.name = "aarshbatra.in@gmail.com",
+                        passwd = "enterPassword", ssl = TRUE),
+            authenticate = TRUE,
+            send = TRUE)  
+}
+
+
 
 #---------------------------------------------------------------------------------------------------------------
 
@@ -243,52 +249,52 @@ renameFilesIntoOrderv2 <- function(cwd, numSeas, ...){
   count <- 1
   
   for (i in 1 : numSeas){
-      newFileNamesBuild[count : (count + argThreeOnwards[[i]] - 1)] <- c(rep(i, times = argThreeOnwards[[i]]))
-      newFileNamesBuild[count : (count + argThreeOnwards[[i]] - 1)] <- str_c(newFileNamesBuild[count : (count + argThreeOnwards[[i]] - 1)], 1 : argThreeOnwards[[i]], sep = ".")
-      count <- count + argThreeOnwards[[i]]
+    newFileNamesBuild[count : (count + argThreeOnwards[[i]] - 1)] <- c(rep(i, times = argThreeOnwards[[i]]))
+    newFileNamesBuild[count : (count + argThreeOnwards[[i]] - 1)] <- str_c(newFileNamesBuild[count : (count + argThreeOnwards[[i]] - 1)], 1 : argThreeOnwards[[i]], sep = ".")
+    count <- count + argThreeOnwards[[i]]
   }
   
-   currentFileNames <- list.files(cwd)
-   indexList <- list()
-   indexDataFinalTable <- tibble(fileName = NA, season = NA, episode = NA)
-   for (l in 1 : length(currentFileNames)){
-     indexList[[l]] <- str_extract_all(currentFileNames[l], "(\\d)+")
-     indexDataFinalTable[l, ] <- c(currentFileNames[l], indexList[[l]][[1]][1], indexList[[l]][[1]][2])
-   }
-   
-   indexDataFinalTable$season <- as.numeric(indexDataFinalTable$season)
-   indexDataFinalTable$episode <- as.numeric(indexDataFinalTable$episode)
-   indexDataFinalTable <- arrange(indexDataFinalTable, season, episode)
-   
-   for (k in 1 : length(indexDataFinalTable$fileName)){
-     if(length(indexDataFinalTable$fileName) == length(newFileNamesBuild)){
-       extensionVec <- "bmp|png|csv|avi|mp4|xml|mkv"
-       exten <- str_extract(indexDataFinalTable$fileName[k], extensionVec) # beautiful
-       if(!is.na(exten)){
-         file.rename(from = indexDataFinalTable$fileName[k], to = sprintf("%s.%s",newFileNamesBuild[k], exten))  
-       } else{
-         file.rename(from = indexDataFinalTable$fileName[k], to = newFileNamesBuild[k])
-       }
-       
-     } else{
-       print("error!")
-     }
-   }
-   
-   ioObjects <- list(currentFileNames, newFileNamesBuild, exten)
+  currentFileNames <- list.files(cwd)
+  indexList <- list()
+  indexDataFinalTable <- tibble(fileName = NA, season = NA, episode = NA)
+  for (l in 1 : length(currentFileNames)){
+    indexList[[l]] <- str_extract_all(currentFileNames[l], "(\\d)+")
+    indexDataFinalTable[l, ] <- c(currentFileNames[l], indexList[[l]][[1]][1], indexList[[l]][[1]][2])
+  }
+  
+  indexDataFinalTable$season <- as.numeric(indexDataFinalTable$season)
+  indexDataFinalTable$episode <- as.numeric(indexDataFinalTable$episode)
+  indexDataFinalTable <- arrange(indexDataFinalTable, season, episode)
+  
+  for (k in 1 : length(indexDataFinalTable$fileName)){
+    if(length(indexDataFinalTable$fileName) == length(newFileNamesBuild)){
+      extensionVec <- "bmp|png|csv|avi|mp4|xml|mkv"
+      exten <- str_extract(indexDataFinalTable$fileName[k], extensionVec) # beautiful
+      if(!is.na(exten)){
+        file.rename(from = indexDataFinalTable$fileName[k], to = sprintf("%s.%s",newFileNamesBuild[k], exten))  
+      } else{
+        file.rename(from = indexDataFinalTable$fileName[k], to = newFileNamesBuild[k])
+      }
+      
+    } else{
+      print("error!")
+    }
+  }
+  
+  ioObjects <- list(currentFileNames, newFileNamesBuild, exten)
   
   return(ioObjects)
- 
+  
   # avenues for improvement
-   # 1. Automate the counting of episodes per season and seasons.
-   # 2. (Done)Automatically Order correctly when reading in from 'list.files()'. 
-   # 3. Individual files preffered over folders.
-   # 4. Delete R history files.
-   # 5. The season might not be the 'second' and episode might not be the 'third'.
-   # 6. People might not download all episodes for all seasons. So, function must be more resilient to this concern.
-   # 7. Bring any system of files with any level of entropy into order.
-   # 8. A measure of before and after 'entropy' in the given directory.
-   # 9. Give options for renaming files, e.g. '1.1' or 's1ep1'. Some other options based on how many variety of files are sorted.
+  # 1. Automate the counting of episodes per season and seasons.
+  # 2. (Done)Automatically Order correctly when reading in from 'list.files()'. 
+  # 3. Individual files preffered over folders.
+  # 4. Delete R history files.
+  # 5. The season might not be the 'second' and episode might not be the 'third'.
+  # 6. People might not download all episodes for all seasons. So, function must be more resilient to this concern.
+  # 7. Bring any system of files with any level of entropy into order.
+  # 8. A measure of before and after 'entropy' in the given directory.
+  # 9. Give options for renaming files, e.g. '1.1' or 's1ep1'. Some other options based on how many variety of files are sorted.
 }
 
 #----------------------------------------------------------------------------------------------------------
@@ -313,51 +319,51 @@ renameFilesIntoOrderv3 <- function(absDirPath){
   finalDataTable$season <- as.numeric(finalDataTable$season)
   finalDataTable$episode <- as.numeric(finalDataTable$episode)
   finalDataTable <- arrange(finalDataTable, season, episode) # Please note that the 'assignment' is crucial, if I had just written
-                                                             # the 'arrange' statement and did not assign it to 'finalDataTable' then
-                                                             # finalDataTable would be arranged but the arranged version will not be 
-                                                             # stored into memory and hence we cannot access it for further operations
-                                                             # This means that the data in 'finalDataTable' would still be 'unarranged'.
-                                                             # By assigning the 'arrange' statement to finalDataTable, the finalDataTable
-                                                             # is both arranged and stored into memory.
+  # the 'arrange' statement and did not assign it to 'finalDataTable' then
+  # finalDataTable would be arranged but the arranged version will not be 
+  # stored into memory and hence we cannot access it for further operations
+  # This means that the data in 'finalDataTable' would still be 'unarranged'.
+  # By assigning the 'arrange' statement to finalDataTable, the finalDataTable
+  # is both arranged and stored into memory.
   
-    newFileNames <- c()
-    for(k in 1 : nrow(finalDataTable)){
-      if(is.na(finalDataTable$season[k]) && is.na(finalDataTable$episode[k])){
-        newFileNames[k] <- finalDataTable$fileName[k]
+  newFileNames <- c()
+  for(k in 1 : nrow(finalDataTable)){
+    if(is.na(finalDataTable$season[k]) && is.na(finalDataTable$episode[k])){
+      newFileNames[k] <- finalDataTable$fileName[k]
+    } else {
+      if(is.na(finalDataTable$extension[k])){
+        newFileNames[k] <- str_c(finalDataTable$season[k], finalDataTable$episode[k], sep = ".")
       } else {
-        if(is.na(finalDataTable$extension[k])){
-          newFileNames[k] <- str_c(finalDataTable$season[k], finalDataTable$episode[k], sep = ".")
-        } else {
-          newFileNames[k] <- str_c(finalDataTable$season[k], finalDataTable$episode[k],
-                                   finalDataTable$extension[k], sep = ".")
-        }
+        newFileNames[k] <- str_c(finalDataTable$season[k], finalDataTable$episode[k],
+                                 finalDataTable$extension[k], sep = ".")
       }
     }
-     
-    for (j in 1 : nrow(finalDataTable)){
-      if(nrow(finalDataTable) != length(newFileNames)){ 
-        print("error!")
-      } else {
-        file.rename(finalDataTable$fileName[j], newFileNames[j])
-      }
+  }
+  
+  for (j in 1 : nrow(finalDataTable)){
+    if(nrow(finalDataTable) != length(newFileNames)){ 
+      print("error!")
+    } else {
+      file.rename(finalDataTable$fileName[j], newFileNames[j])
     }
-    
-    finalDataTable <- mutate(finalDataTable, newFileName = newFileNames)
-    
-    return(finalDataTable)
+  }
+  
+  finalDataTable <- mutate(finalDataTable, newFileName = newFileNames)
+  
+  return(finalDataTable)
   
   # avenues for improvement
-   # 1. ignore case in detecting 'seas', 'season', etc.
-   # 2. better and efficient regular expressions(e.g. for the extensions).
-   # 3. loose the for loop.
-   # 4. aim for a 'The Organizer': Give it 'anything' and will organize it for you.
-   # 5. look at the points from earlier version of the function.
-   # 6. Make it work for folders.
-   # 7. If already correctly named, leave unchanged. If files named as folders (i.e. without extension) either guess extension or provide a default app
-   #    to play it. Remove extension, if any in folder names.
-   # 8. Let user enter his/her own pattern and use that in list.files as a regular expression.   
-   # 9. Look at The Flash '2014.4' folder error. Status: Taken care off. 
-    
+  # 1. ignore case in detecting 'seas', 'season', etc.
+  # 2. better and efficient regular expressions(e.g. for the extensions).
+  # 3. loose the for loop.
+  # 4. aim for a 'The Organizer': Give it 'anything' and will organize it for you.
+  # 5. look at the points from earlier version of the function.
+  # 6. Make it work for folders.
+  # 7. If already correctly named, leave unchanged. If files named as folders (i.e. without extension) either guess extension or provide a default app
+  #    to play it. Remove extension, if any in folder names.
+  # 8. Let user enter his/her own pattern and use that in list.files as a regular expression.   
+  # 9. Look at The Flash '2014.4' folder error. Status: Taken care off. 
+  
   # Imp Note: Versioning of code is crucial. Do not try to make all optimizations in version 1. This way your old mistakes get erased.
   # , rather write a quick dirty version 1 and then improve upon it in version 2, and so on, till you get an efficient system. This way
   # you will have documented your progress and see what things are 'not' to be done again.  
@@ -438,22 +444,22 @@ for (i in x){
 # lock permutations print v1
 library(stringr)
 lockPermutations <- function(inputChoiceVec, keyLength = 4){
-inputChoiceVec <- as.numeric(inputChoiceVec)
-permutations <- c(NA)
-
-for(i in inputChoiceVec){
-  for (j in inputChoiceVec){
-    for (k in inputChoiceVec){
-      for(l in inputChoiceVec){
-        permutations <- append(permutations, str_c(i, j, k, l, sep = ""))
+  inputChoiceVec <- as.numeric(inputChoiceVec)
+  permutations <- c(NA)
+  
+  for(i in inputChoiceVec){
+    for (j in inputChoiceVec){
+      for (k in inputChoiceVec){
+        for(l in inputChoiceVec){
+          permutations <- append(permutations, str_c(i, j, k, l, sep = ""))
+        }
       }
     }
   }
-}
-permutations <- permutations[2 : length(permutations)]
-numPermutations <- length(permutations)
-returnObj <- list(permutations, numPermutations)
-return(returnObj)
+  permutations <- permutations[2 : length(permutations)]
+  numPermutations <- length(permutations)
+  returnObj <- list(permutations, numPermutations)
+  return(returnObj)
 }
 
 #-------------------------------------------------------------------------------------------
@@ -500,8 +506,8 @@ sumCountDown <- function(n){
 #--------------------------------------------------------------------------------------------
 
 # simulating games like chess and monopoly---------------------------------------------------
- # see Monopoly simulation folder
- 
+# see Monopoly simulation folder
+
 
 
 #--------------------------------------------------------------------------------------------
@@ -534,7 +540,7 @@ sumCountDown <- function(n){
 
 # references: Edsger Dijkstra, implement without referencing.
 # ways to tackle
- # 1. The path with the least variance from a center fixed line 
+# 1. The path with the least variance from a center fixed line 
 
 
 
@@ -552,36 +558,36 @@ sumCountDown <- function(n){
 
 # Cash counter Algorithm v1---------------------------------------------------------------------------------
 cashBalanceDen <- function(billAmt, cashRecieved){
-cashBalance <- cashRecieved - billAmt  
-library(tidyverse)
-library(dplyr)
-denominations <- c(2000, 500, 200, 100, 50, 20, 10, 5, 2, 1)
-counter <- c(rep(0, times = length(denominations)))
-
-for (den in 1 : length(denominations)){
-  if(cashBalance %% denominations[den] != cashBalance){
-    if(cashBalance %% denominations[den] == 0){
-      counter[den] <- counter[den] + cashBalance %/% denominations[den]
-      cashBalance <- cashBalance - cashBalance
-      break
+  cashBalance <- cashRecieved - billAmt  
+  library(tidyverse)
+  library(dplyr)
+  denominations <- c(2000, 500, 200, 100, 50, 20, 10, 5, 2, 1)
+  counter <- c(rep(0, times = length(denominations)))
+  
+  for (den in 1 : length(denominations)){
+    if(cashBalance %% denominations[den] != cashBalance){
+      if(cashBalance %% denominations[den] == 0){
+        counter[den] <- counter[den] + cashBalance %/% denominations[den]
+        cashBalance <- cashBalance - cashBalance
+        break
+      } else {
+        counter[den] <- counter[den] + cashBalance %/% denominations[den]
+        cashBalance <- cashBalance - ((cashBalance %/% denominations[den]) * denominations[den])
+        cashRecieved <- cashBalance
+        billAmt <- 0
+        cashBalanceDen(billAmt, cashRecieved) # beautiful recursion
+      }
     } else {
-      counter[den] <- counter[den] + cashBalance %/% denominations[den]
-      cashBalance <- cashBalance - ((cashBalance %/% denominations[den]) * denominations[den])
-      cashRecieved <- cashBalance
-      billAmt <- 0
-      cashBalanceDen(billAmt, cashRecieved) # beautiful recursion
+      next
     }
-  } else {
-    next
   }
-}
-denCount <- tibble(x = denominations, y = counter)
-return(denCount)
-
-# additions to be made to the algorithm
- # alternative solutions (use the initial solution and from that calculate alternative solutions).
- # inventory
- # user interface (ask question on terminal)
+  denCount <- tibble(x = denominations, y = counter)
+  return(denCount)
+  
+  # additions to be made to the algorithm
+  # alternative solutions (use the initial solution and from that calculate alternative solutions).
+  # inventory
+  # user interface (ask question on terminal)
 }
 
 #----------------------------------------------------------------------------------------------
@@ -591,8 +597,8 @@ return(denCount)
 #---------------------------------------------------------------------------------------------
 
 # Animations: Linear transformations, etc.-----------------------------------------------
- # plotly, tweenr, gganimate, graphics packages looks promising
- 
+# plotly, tweenr, gganimate, graphics packages looks promising
+
 #---------------------------------------------------------------------------------------------
 
 # generating fractals-------------------------------------------------------------------------
@@ -622,7 +628,7 @@ sierpinskiTriangle <- function(vertex1, vertex2, vertex3, delta, midPointCounter
       # yMin <- min(vertex1[2], vertex2[2], vertex3[2])
       xCoords <- c(vertex1[1], vertex2[1], vertex3[1])
       yCoords <- c(vertex1[2], vertex2[2], vertex3[2])
-    #  plot(c(xMin - 1, xMax + 1), c(yMin - 1, yMax + 1), type = "n")
+      #  plot(c(xMin - 1, xMax + 1), c(yMin - 1, yMax + 1), type = "n")
       currentPlot <- polygon(xCoords, yCoords)
       par(new = TRUE)
       vertex1Tmp <- c((vertex1[1] + vertex2[1])/ 2, (vertex1[2] + vertex2[2])/2)
@@ -698,7 +704,7 @@ chaosGame <- function(xCoords, yCoords, iterations, divDistBy, sleepFor, colour)
     } else {
       points(xStart, yStart, cex = 0.5, pch = 15)      
     }
-
+    
   }
 }
 
@@ -762,15 +768,15 @@ addDigitsV2(10000)
 postV2 <- Sys.time()
 diffV2 <- postV2 - preV2
 
-    # make digit sum data table for 1 to 'n' digits
-    digSumData <- function(num){
-      digSumTable <- tibble(x = NA, y = NA)
-      for(j in 1 : num){
-        digSumTable[j, 1] <- j
-        digSumTable[j, 2] <- addDigits(j)
-      }
-      return(digSumTable)
-    }
+# make digit sum data table for 1 to 'n' digits
+digSumData <- function(num){
+  digSumTable <- tibble(x = NA, y = NA)
+  for(j in 1 : num){
+    digSumTable[j, 1] <- j
+    digSumTable[j, 2] <- addDigits(j)
+  }
+  return(digSumTable)
+}
 ggplot(data = tab) + geom_point(mapping = aes(x = x, y = y, col = y))
 
 # Sierpinski Triangle (R turtle graphics package code)---------------------------------------------------
@@ -886,7 +892,7 @@ sierpinskiCarpet <- function(points, degree){
                    (goToFracDist(points[1, ], points[2, ], 2/3))[2] + (1/3*(points[2, 1] - points[1, 1])), 
                    (goToFracDist(points[1, ], points[2, ], 1/3))[1] + 0,
                    (goToFracDist(points[1, ], points[2, ], 1/3))[2] + (1/3*(points[2, 1] - points[1, 1]))),
-                   nrow = 4, byrow = TRUE)
+                 nrow = 4, byrow = TRUE)
     sierpinskiCarpet(p1, degree - 1)
     p2 <- matrix(c(goToFracDist(points[2, ], points[3, ], 1/3),
                    goToFracDist(points[2, ], points[3, ], 2/3),
@@ -1056,9 +1062,9 @@ genConvFromDecV1 <- function(decInput, baseNum){ # converts from decimal to othe
     
   }
 }    
-  
+
 genConvFromDecV2 <- function(decInput, baseNum){ # Uses letters A-z, A = 10, B = 11, ..., Z = 35.
-                                                 # Status: R approximates large numbers, fix it.    
+  # Status: R approximates large numbers, fix it.    
   if(decInput == 0 || baseNum == 0){
     return(0)
   } else {
@@ -1125,7 +1131,7 @@ genConvFromDecV2 <- function(decInput, baseNum){ # Uses letters A-z, A = 10, B =
 # Converting a photograph to rgb values/binary representation/hexadecimal representation------------------
 
 #--------------------------------------------------------------------
-                                 
+
 # progrmattic Art, e.g.  ##----------------------------------------
 #                         # 
 #                        ####            
@@ -1139,18 +1145,18 @@ genConvFromDecV2 <- function(decInput, baseNum){ # Uses letters A-z, A = 10, B =
 #-------------------------------------------------
 
 # Monte Carlo Methods-----------------------
- # refer: https://www.r-bloggers.com/probability-and-monte-carlo-methods/
- # refer MonteCarlo package
+# refer: https://www.r-bloggers.com/probability-and-monte-carlo-methods/
+# refer MonteCarlo package
 #-----------------------------------------
 
 # Mandelbrot set, Filled Julia set--------------------
 
- # refer: http://rtricks.blogspot.com/2007/04/mandelbrot-set-with-r-animation.html
- #         https://leonjessen.wordpress.com/2015/11/03/plot-the-mandelbrot-set-using-r/ (contains explanation of code).
+# refer: http://rtricks.blogspot.com/2007/04/mandelbrot-set-with-r-animation.html
+#         https://leonjessen.wordpress.com/2015/11/03/plot-the-mandelbrot-set-using-r/ (contains explanation of code).
 #-----------------------------------------------------
 
 # Animation in general------------------------------
- # Useful functions: image, write.gif 
+# Useful functions: image, write.gif 
 #----------------------------------------------------
 
 # Candle burning problem---------------------
@@ -1173,9 +1179,9 @@ freqAnalysis <- function(pathToDocument){
   }
   colnames(alphFreq)[2] <- c("freq")
   print(ggplot(data = alphFreq) + geom_col(mapping = aes(x = alphabet, y = freq)) + ggtitle(pathToDocument)) # use print when 
-                                                                                # you want to print the 
-                                                                                # graph directy from a 
-                                                                                # function call  
+  # you want to print the 
+  # graph directy from a 
+  # function call  
   totalNumberOfAlphabets <- sum(alphFreq$freq)
   return(totalNumberOfAlphabets)
 }
@@ -1385,7 +1391,7 @@ sqRootHitToOne <- function(numbers){
   returnList[[2]] <- numbers
   returnList[[3]] <- counterVec
   return(returnList)
-
+  
 }
 
 tb <- tibble(x = sample(c(1 : 100000), 1000))
@@ -1470,8 +1476,8 @@ df <- tibble(numberOfTosses = c(1 : nIter), accountBalance = returnData)
 ggplot(data = df) + geom_line(mapping = aes(x = numberOfTosses, y = accountBalance))
 
 # animation nobs
-  # refer: 1. https://plot.ly/r/animations/
-  #        2. https://plot.ly/r/cumulative-animations/
+# refer: 1. https://plot.ly/r/animations/
+#        2. https://plot.ly/r/cumulative-animations/
 nToss <- 100
 nAnimFrames <- 1000 
 nIter <- 100
@@ -1576,7 +1582,7 @@ for (k in 1 : length(nFirmsVec)){
   ans <- solve(A, B)
   price[k] <- 4 - (0.01*(length(ans)*ans[1]))
   
-
+  
   # send e-mail when data is ready  
   # if(k == length(nFirmsVec)){
   #   send.mail(from = "aarshbatra.in@gmail.com", to = "aarshbatra.in@gmail.com", subject = "Test e-mail from R",
@@ -1601,12 +1607,308 @@ df1 %>%
           mode = "lines", 
           line = list(simplyfy = F)) %>%
   animation_opts(
-    frame = 100, 
+    frame = 50, 
     transition = 0, 
     redraw = FALSE
   )
 
-    
+
 #------------------------------------------------------------------------------------
 
+# sketchR 
+fileName <- 1
+fileType <- ".jpg"
+imPath <- c(str_c("C:/Users/Aarsh Batra/Desktop/GitHub/play/", fileName,  fileType))
+
+outputSketch <- function(fileName, fileType, lw, sty){
+  imPath <- c(str_c("C:/Users/Aarsh Batra/Desktop/GitHub/play/", fileName,  fileType))
+  sampleImage <- im_load(imPath)
+  sketchedSampleImage <- sketch(sampleImage, lineweight = lw, style = sty)
+  return(sketchedSampleImage)
+}
+
+im_save(foo, "14v2", path = "C:/Users/Aarsh Batra/Desktop/GitHub/play")
+
+# cash-counter algorithm v2 (assuming denominations 1, 2,  5, 10, 50, 100, 200, 500, 2000)
+
+# cash in stock
+
+denominations <- c(1, 2, 5, 10, 20, 50, 100, 200, 500, 2000)
+cashInStock <- c(10, 20, 30, 10, 15, 20, 0, 10, 19, 20)
+returnCashDenmVec <- c(rep(0, times = length(denominations)))
+
+returnChange <- function(nd1, nd2, nd3, nd4, nd5, nd6, nd7, nd8, nd9, nd10, cogs){
+  
+  amountReceived <- sum(c(nd1, nd2, nd3, nd4, nd5,
+                          nd6, nd7, nd8, nd9, nd10) * denominations)
+  
+  foo <- denominations
+  if(cogs > amountReceived){
+    print(stringr::str_c("You need to pay", cogs - amountReceived, "more Rs", sep = " "))
+  } else if (cogs == amountReceived) {
+    print("Thank you for shopping with us!")
+  } else {
+    cashInStock <- cashInStock + c(nd1, nd2, nd3, nd4, nd5, nd6, nd7, nd8, nd9, nd10)
+    returnCash <- amountReceived - cogs
+    print(str_c("returnCash: ", returnCash)) # debugging
+    denomDistfrmRetCash <- returnCash - denominations
+    print(str_c("denomDistFromRetCash: ", denomDistfrmRetCash)) # debugging
+    closDenInd <- which(denomDistfrmRetCash == min(
+      denomDistfrmRetCash[denomDistfrmRetCash >= 0]))
+    print(str_c("closeDenInd: ", closDenInd)) # debugging
+    for(i in closDenInd : 1){
+      if(cashInStock[i] > 0){
+        currFreqReq <- returnCash %/% (denominations[i])
+        if(currFreqReq == 0){
+          next
+        } else {
+          remCash <- returnCash %% (denominations[i])
+          if(currFreqReq >= cashInStock[i]){
+            if(cashInStock[i] == 0){
+              next
+            } else {
+              returnCashDenmVec[i] <-  cashInStock[i]
+              cashInStock[i] <- cashInStock[i] -  cashInStock[i]
+              returnCash <- remCash
+              if(returnCash == 0){
+                break
+              } 
+            }
+            
+          } else {
+            returnCashDenmVec[i] <- currFreqReq
+            cashInStock[i] <- cashInStock[i] - currFreqReq
+            returnCash <- remCash
+            if(returnCash == 0){
+              break
+            }
+          }
+          
+        }
+      }
+    }
+    dfToReturn <- tibble(denom = denominations, numOfNotesReturn = returnCashDenmVec,
+                         cashLeftOverInCounter = cashInStock)
+    return(dfToReturn)    
+    
+    
+  }
+}
+
+# ggplot (Mastering Software Development in R)--------------------
+
+# install.packages("titanic") # If you don't have the package installed
+library(titanic)
+data("titanic_train", package = "titanic")
+titanic <- titanic_train
+
+library(faraway)
+data("worldcup")
+
+library(ggplot2)
+library(dplyr)
+library(ggplot2)
+library(gridExtra)
+library(ggthemes)
+
+irisData <- datasets::iris
+irisData %>% ggplot(mapping = aes(x = Sepal.Length, y = Sepal.Width, color = Species)) + geom_point() +
+  ggtitle("Sepal Length v/s Sepal Width by Species") + xlab("Sepal Length") + ylab("Sepal Width")
+
+worldcup %>% ggplot() + geom_point(mapping = aes(x = Time, y = Passes)) + 
+  facet_grid(Team ~ Position)
+
+obj1 <- worldcup %>% dplyr::group_by(Team, Position) %>% summarise(AvgPasses = mean(Passes, na.rm = TRUE)) %>% dplyr::arrange(Team, AvgPasses)
+
+obj1_filter_lrgAvgPasses <- obj1 %>% filter((AvgPasses > 150 | AvgPasses < 30)) %>% mutate(Label = str_c(Team, Position, sep = ", "))
+
+obj1 %>% ggplot() + geom_point(mapping = aes(x = Position, y = AvgPasses, color = Position)) + geom_hline(yintercept = c(40, 80)) + 
+  facet_wrap(~Team, ncol = 6) + geom_text(data = obj1_filter_lrgAvgPasses, mapping = aes(x = Position, y = AvgPasses, label = Label), size = 2.5) + coord_flip() + theme_few() +
+  ggtitle("Avg Passes for each position by Team")
+
+# Converting a number to string----------------------------
+# assuming 3 comma system
+
+getTotalNumOfPos <- function(num){
+  if(str_detect(num, "\\+") == TRUE){
+    numAfterE <- str_extract(num, "\\+(.)+")
+    numAfterE <- as.numeric(str_extract(numAfterE, "[^\\+]+"))
+    return(numAfterE + 1)
+  } else {
+    return(str_count(num))
+  }
+}
+
+convertToWord <- function(num){ # This only converts for numbers 1 to 100
+  convTibble <- tibble(
+    num = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17
+            , 18, 19, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 
+            600, 700, 800, 900, 1000), 
+    numInWords = c("zero", "one", "two", "three", "four", "five", "six", "seven", "eight", 
+                   "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", 
+                   "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "thirty", 
+                   "forty", "fifty", "sixty", "seventy", "eighty", "ninety", "One hundred", 
+                   "Two Hundred", "Three Hundred", "Four Hundred", "Five Hundred", "Six Hundred", 
+                   "Seven Hundred", "Eight Hundred", "Nine Hundred", "One Thousand")
+  )
+  if((num %in% convTibble$num) == TRUE){
+    tmpInd1 <- which(convTibble$num == num)
+    return(convTibble$numInWords[tmpInd1])
+  } else {
+    lenOfNum <- length(unlist(str_split(num, "")))
+    if(lenOfNum == 2){
+      splitNum <- as.numeric(unlist(str_split(num, "")))
+      
+      splitNumTensPartNum <- splitNum[1] * 10 
+      tmpInd2 <- which(convTibble$num == splitNumTensPartNum)
+      tensPartInWords  <- convTibble$numInWords[tmpInd2]
+      
+      splitNumOnesPartNum <- splitNum[2] * 1
+      tmpInd3 <- which(convTibble$num == splitNumOnesPartNum)
+      onesPartInWords  <- convTibble$numInWords[tmpInd3]
+      
+      return(str_c(tensPartInWords, onesPartInWords, sep = " ")) 
+      
+    } else if(lenOfNum == 3){
+      splitNum <- as.numeric(unlist(str_split(num, "")))
+      
+      splitNumHundredsPartNum <- splitNum[1] * 100 
+      tmpInd4 <- which(convTibble$num == splitNumHundredsPartNum)
+      hundredsPartInWords  <- convTibble$numInWords[tmpInd4]
+      
+      newNum <- num - splitNumHundredsPartNum
+      
+      if((newNum %in% convTibble$num) == TRUE){
+        tmpInd1 <- which(convTibble$num == newNum)
+        onesTensPartInWords  <- convTibble$numInWords[tmpInd1]
+      } else {
+        lenOfNum <- length(unlist(str_split(newNum, "")))
+        if(lenOfNum == 2){
+          splitNum <- as.numeric(unlist(str_split(newNum, "")))
+          
+          splitNumTensPartNum <- splitNum[1] * 10 
+          tmpInd2 <- which(convTibble$num == splitNumTensPartNum)
+          tensPartInWords  <- convTibble$numInWords[tmpInd2]
+          
+          splitNumOnesPartNum <- splitNum[2] * 1
+          tmpInd3 <- which(convTibble$num == splitNumOnesPartNum)
+          onesPartInWords  <- convTibble$numInWords[tmpInd3]
+          
+          onesTensPartInWords <- str_c(tensPartInWords, onesPartInWords, sep = " ")
+          
+          return(str_c(hundredsPartInWords, onesTensPartInWords, sep = " "))
+          
+        } else {
+          stop("Please enter a number in the range 0 to 999")
+        }
+      }
+      return(str_c(hundredsPartInWords, onesTensPartInWords, sep = " "))    
+    }
+  }
+}
+
+# biggestDenOfNum
+# numOfPos
+# nameOfEachPosVec <- c("one", "ten")
+# numAtEachPos
+
+
+# R Whatsapp-----------------------
+history <- system.file("extdata", "sample.txt", package = "rwhatsapp")
+chat <- rwa_read(history)
+
+
+## Cryptography
+
+
+# Frequency Analysis-------------------
+
+cipherText <- "PCQVMJYPDLBYKLYSOKBXBJXWXVBXVZCJPOEYPDKBXBJYUXJLBJOOKCPKCPLBOLBCMKXPVXPVIYJKLPYDBL
+QBOPKBOBXVOPVOVLBOLXROCISXXJMIKBOJCKOXPVEYKKOVLBODJCMPVZOICJOBYSKXUYPDDJOXLEYPDICJXLBCMK
+XPVXPVCPOPYDBLKYBXNOZOOPJOACMPLYPDLCUCMLBOIXZROKCIFXKLXDOKXPVLBORODOPVKCIXPAYOPLEYPDK
+SXUYSXEOKCZCRVXKLCAJXNOXIXNCMJCIUCMJSXGOKLUOFYRCDMOLXROKIJCSLBOLBCMKXPVXPVCPOPYDBLK"
+
+cipherTextVec <- unlist(str_split(cipherText, ""))
+
+lengthCipherText <- length(cipherTextVec)
+
+lettersFreqInCipherText <- tibble(letter = LETTERS, freq = 
+                                    c(rep(NA, times = length(LETTERS)))) 
+for(i in 1 :  length(LETTERS)){
+  tmpSum <- sum(str_detect(cipherTextVec, LETTERS[i]))
+  lettersFreqInCipherText$freq[i] <- tmpSum 
+}
+
+lettersFreqInCipherText <- lettersFreqInCipherText %>% 
+  mutate(percGivenTotalLetters = (freq/lengthCipherText)*100) %>%
+  arrange(desc(percGivenTotalLetters))
+
+# encipher, decipher
+
+cryptAnalysis <- function(string, cipherType = "caesar", typeOfOper = "encrypt"){
+  print("What do you want to do? Type 'encrypt' for encrypting and 'decrypt' for
+  decrypting. Please enter your answer below:" )
+  typeOfOper <- readline()
+  if((typeOfOper %in% c("encrypt", "decrypt")) == FALSE){
+    stop("Please enter 'encrypt' for encrypting and 'decrypt' for decrypting.")
+  } else {
+    if(cipherType == "caesar" && typeOfOper == "encrypt"){
+      print("Enter a value for caesar shift")
+      shiftBy <- readline()
+      shiftBy <- as.numeric(shiftBy)
+      stringToLower <- stringr::str_to_lower(string)
+      stringToLowerVec <- unlist(stringr::str_split(stringToLower, ""))
+      cipherTib <- tibble(plainText = stringToLowerVec, indexOfPlainText = NA, 
+                          indexOfCipherText = NA)
+      for(i in 1 : length(stringToLowerVec)){
+        if(stringToLowerVec[i] == " "){
+          cipherTib$indexOfPlainText[i] <- NA
+        } else {
+          cipherTib$indexOfPlainText[i] <- which(letters %in% stringToLowerVec[i]) 
+        }
+      }
+      cipherTib$indexOfPlainText <- as.numeric(cipherTib$indexOfPlainText)
+      cipherTib$indexOfCipherText <- (cipherTib$indexOfPlainText + shiftBy)
+      cipherTib$indexOfCipherText <- cipherTib$indexOfCipherText %% 26
+      cipherTib$indexOfCipherText[cipherTib$indexOfCipherText == 0] <- 26
+      cipherTib$cipherAlphabet <- letters[cipherTib$indexOfCipherText]
+      cipherTib$cipherAlphabet <- tidyr::replace_na(cipherTib$cipherAlphabet, " ")
+      cipherTextReturn <- str_c(cipherTib$cipherAlphabet, collapse =  " ")
+      retlist <- list(a = cipherTextReturn, b = cipherTib)
+      return(retlist)
+      
+      
+    } else if(cipherType == "caesar" && typeOfOper == "decrypt"){
+      
+      print("Enter a value by which you performed the caesar shift")
+      shiftBy <- readline()
+      shiftBy <- as.numeric(shiftBy)
+      stringToLower <- stringr::str_to_lower(string)
+      stringToLowerVec <- unlist(stringr::str_split(stringToLower, ""))
+      cipherTib <- tibble(cipherText = stringToLowerVec, indexOfCipherText = NA, 
+                          indexOfPlainText = NA)
+      for(i in 1 : length(stringToLowerVec)){
+        if(stringToLowerVec[i] == " "){
+          cipherTib$indexOfCipherText[i] <- NA
+        } else {
+          cipherTib$indexOfCipherText[i] <- which(letters %in% stringToLowerVec[i]) 
+        }
+      }
+      cipherTib$indexOfCipherText <- as.numeric(cipherTib$indexOfCipherText)
+      cipherTib$indexOfPlainText <- (cipherTib$indexOfCipherText - shiftBy) + 26
+      cipherTib$indexOfPlainText <- cipherTib$indexOfPlainText %% 26
+      cipherTib$indexOfPlainText[cipherTib$indexOfPlainText == 0] <- 26
+      cipherTib$decipherAlphabet <- letters[cipherTib$indexOfPlainText]
+      cipherTib$decipherAlphabet <- tidyr::replace_na(cipherTib$decipherAlphabet, " ")
+      decipherTextReturn <- str_c(cipherTib$decipherAlphabet, collapse =  " ")
+      retlist <- list(a = decipherTextReturn, b = cipherTib)
+      return(retlist)
+      
+      
+      
+      
+    }
+    
+  }
+}
 
